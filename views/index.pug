@@ -1,0 +1,25 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    link(rel="stylesheet", href="css/inicio.css")
+    title= titulo
+  body
+   .container
+    h1 Controlu
+    .caixa-login
+     h1 Iniciar Sessão
+     form(action="/login")
+      label Username
+      br
+      input(type="text", name="username", id="username")
+      br
+      br
+      label Password
+      br
+      input(type="password", name="password", id="password")
+      br
+      button(type="submit") Iniciar sessão
+      .erro= erro
+   br
+   span controlu - versão 1.0

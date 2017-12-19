@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300');
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+body {
+    text-align: center;    
+    font-family: 'Roboto', sans-serif;   
+    background-color: rgb(7, 9, 24);    
+}
+
+h1 {
+    color: white;
+    font-size: 2.5em;
+    text-transform: uppercase;
+    padding-bottom: 15px;
+}
+
+.container {
+    margin-top: 6%;
+}
+
+.caixa-login {
+    width: 300px;
+    border-radius: 4px;
+    padding: 20px;
+    text-align: left;
+    margin: auto;
+    background-color: white;
+}
+
+.caixa-login h1 {
+    color: black;
+    font-size: 1.5em;
+}
+
+.caixa-login label {
+    font-size: 1.2em;
+    padding-bottom: 10px;
+    font-weight: bold;
+}
+
+.caixa-login input {
+    width: 90%;
+    border: 1px solid rgb(7,9,24);
+    padding: 5px;
+    border-radius: 4px;
+    background-color: rgb(240, 240, 240);
+}
+
+.caixa-login button {
+    border: none;
+    padding: 10px;
+    display: inline-block;
+    background-color: rgb(7,9,24);
+    color: white;
+    border-radius: 4px;
+    margin-top: 5%;
+}
+
+.caixa-login .erro {
+    margin-top: 10px;
+    display: inline-block;
+    color: red;
+}
+
+span {
+    color: white;
+}
