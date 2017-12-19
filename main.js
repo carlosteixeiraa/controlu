@@ -81,7 +81,7 @@ app.get('/login', (req, res) => {
             console.log(err);
         }
         if (!user) {
-            erro = 'Utilizador não encontrado ou password errada.';
+            erro = '✖ Utilizador não encontrado ou password errada.';
             res.redirect('/');
         } else {
             erro = '';
@@ -125,8 +125,10 @@ function obterInfo() {
 // Route Painel
 app.get("/painel", (req, res) => {
     if(!req.session.user) {
+        erro = '✖ É necessario iniciar sessão para usar o painel.'        
         res.redirect('/');
     } else {
+        erro = '';        
         obterInfo();
         var sistema = osName();        
         res.render('painel', {
@@ -137,6 +139,12 @@ app.get("/painel", (req, res) => {
         });
     }
 });
+
+// Route 404
+app.get("*", (req, res) => {
+    res.redirect('/');
+    console.log('Erro 404 - ', req.path)
+})
 
 // Controlu ligado
 app.listen(port, () => {

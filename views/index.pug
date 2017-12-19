@@ -19,7 +19,12 @@ html
       br
       input(type="password", name="password", id="password")
       br
-      button(type="submit") Iniciar sessão
-      .erro= erro
+      button(type="submit") Iniciar sessão ✓
+      - if (erro)
+        .erro= erro
+      - else 
+       br
+       br
+       br
    br
    span controlu - versão 1.0
