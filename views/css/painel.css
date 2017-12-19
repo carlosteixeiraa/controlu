@@ -16,6 +16,7 @@ body {
 
 aside {
     text-align: center;
+    display: inline-block;
     width: 220px;
     position: absolute;
     background-color: rgb(7, 9, 24);
@@ -26,7 +27,7 @@ aside {
 
 aside h1 {
     color: white;
-    padding-top: 10px;
+    padding-top: 30px;
     text-transform: uppercase;    
 }
 
@@ -41,11 +42,75 @@ aside nav {
     margin-top: 50px;
 }
 
-aside nav ul {
+aside .ativo {
+    color: rgb(73, 101, 194);
 }
 
 aside nav ul li {
     list-style: none;
     padding: 8px;
-    border-bottom: 1.3px solid white;
+    border-bottom: 1.3px solid rgb(22, 34, 83);
+}
+
+.area-painel {
+    display: inline-block;
+    margin-left: 280px;
+    margin-top: 30px;
+}
+
+.area-painel h2 {
+    font-size: 1.6em;
+}
+
+.area-painel p {
+    font-size: 1.2em;
+}
+
+.caixa-painel {
+    width: 290px;
+    border-radius: 4px;
+    background-color: rgb(235, 235, 235);
+    border: 1px solid rgba(155, 155, 155, 0.993);
+    box-shadow: 2px 2px 8px #888888;
+    padding: 15px;
+}
+
+#relogio {
+    text-align: right;
+}
+
+.caixa-painel hr {
+    margin-top: 4px;
+}
+
+.caixa-painel .areas {
+    padding-top: 3%;    
+    width: 45%;
+    display: inline-block;
+}
+
+.caixa-painel h2 {
+    text-transform: uppercase;
+    font-size: 1.3em;
+}
+
+.caixa-painel .areasp {
+    width: 45%;
+    display: inline-block;
+    padding-top: 3%;
+    padding-left: 26px;    
+}
+
+.caixa-painel h3 {
+    padding-top: 6px;
+}
+
+.caixa-painel h2 {
+    display: inline-block;
+}
+
+.caixa-painel h2 span {
+    display: inline-block;
+    margin-left: 110px;
+    color: rgb(13, 146, 13);
 }

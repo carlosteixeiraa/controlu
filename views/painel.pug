@@ -3,18 +3,38 @@ html
   head
     meta(charset="utf-8")
     link(rel="stylesheet", href="css/painel.css")
+    script(src="js/painel.js")
     title= titulo
-  body
+  body(onload="recarregar();")
     aside
      h1 Controlu
      span Painel controlo
      nav
       ul
        a(href="/painel")
-        li Painel
+        li(class="ativo") Painel
        a(href="/consola")
         li Consola
        a(href="/opcoes")
         li Opções
        a(href="/logout")
         li Sair
+    .area-painel
+     h2 Bem-vindo,
+     p= user
+     br
+     .caixa-painel
+      h2 Informações
+       a(href="/painel")
+        span ↺
+      hr
+      .areas
+       h3 IP
+       span= ipp
+       h3 Uptime
+       span= uptime
+      .areasp
+       h3 OS
+       span= sistema
+       h3 Distro
+       span= distro

@@ -2,14 +2,21 @@ var express = require("express");
 var mongoose = require("mongoose");
 var session = require("express-session");
 var linuxDistro = require('linux-distro');
+var procStats = require('process-stats')
 var publicIp = require('public-ip');
 var os = require('os');
+var pty = require('pty.js');
 var osName = require('os-name');
+var http = require('http');
+var fs = require('fs');
 var app = express();
 var port = 3002;
 
 // Ficheiros estaticos
 app.use(express.static('views'));
+
+// Autorizar scripts em node_modules
+app.use('/scripts', express.static(__dirname + '/node_modules/'));
 
 // Usar express-session
 app.use(session({
@@ -45,6 +52,45 @@ var userSchema = new mongoose.Schema({
 });
 
 var User = mongoose.model('usuarios', userSchema);
+
+// Socket.io
+
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+server.listen(port, () => {
+    console.log('Controlu a ouvir em localhost:' + port)
+});
+
+io.on('connection', function(socket){
+  // Criar consola
+  var term = pty.spawn('sh', [], {
+    name: 'xterm-color',
+    cols: 80,
+    rows: 30,
+    cwd: process.env.HOME,
+    env: process.env
+  });
+  // Ouve pelo ouput e manda ao user
+  term.on('data', function(data){
+    socket.emit('output', data);
+  });
+
+  // Ouve o que o user insere e manda para a consola
+  socket.on('input', function(data){
+    term.write(data);
+  });
+
+  socket.on('resize', function(data){
+    term.resize(data[0], data[1]);
+  });
+
+  // Quando o usuario sai
+  socket.on("disconnect", function(){
+    term.destroy();
+    console.log("User saiu da consola!");
+  });
+});
+
 
 // API Registro
 app.get('/criarconta', (req, res) => {
@@ -99,6 +145,7 @@ app.get('/logout', (req, res) => {
 
 // Route Inicio
 app.get("/", (req, res) => {
+    obterInfo();
     if(!req.session.user) {
         res.render('index', {
             titulo: 'Controlu - Iniciar sessão',
@@ -109,9 +156,23 @@ app.get("/", (req, res) => {
     }
 });
 
+app.get("/consola", (req, res) => {
+    if(!req.session.user) {
+        erro = '✖ É necessario iniciar sessão para usar a consola.'        
+        res.redirect('/');
+    } else {
+        erro = '';              
+        res.render('consola', {
+            titulo: 'Controlu - Consola',
+            user: req.session.user.nome
+        });
+    }
+})
+
 // Painel Info
 var distro;
 var ipp;
+var uptime;
 
 function obterInfo() {
     linuxDistro().then(data => {
@@ -120,6 +181,7 @@ function obterInfo() {
     publicIp.v4().then(ip => {
         ipp = ip;
     });
+    stats = procStats();
 }
 
 // Route Painel
@@ -133,7 +195,9 @@ app.get("/painel", (req, res) => {
         var sistema = osName();        
         res.render('painel', {
             titulo: 'Controlu - Painel',
+            user: req.session.user.nome,
             sistema: sistema,
+            uptime: stats.uptime.pretty,
             distro: distro,
             ipp: ipp
         });
@@ -145,8 +209,3 @@ app.get("*", (req, res) => {
     res.redirect('/');
     console.log('Erro 404 - ', req.path)
 })
-
-// Controlu ligado
-app.listen(port, () => {
-    console.log("Controlu a ouvir em localhost:" + port);
-});
