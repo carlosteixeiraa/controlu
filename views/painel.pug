@@ -3,6 +3,7 @@ html
   head
     meta(charset="utf-8")
     link(rel="stylesheet", href="css/painel.css")
+    link(rel="stylesheet", href="css/flexboxgrid.min.css")
     script(src="js/painel.js")
     title= titulo
   body(onload="recarregar();")
@@ -20,21 +21,48 @@ html
        a(href="/logout")
         li Sair
     .area-painel
-     h2 Bem-vindo,
-     p= user
+     .intro
+      a(href="/painel")
+       span ↺&nbsp
+      h2 Bem-vindo,
+      p= user
      br
-     .caixa-painel
-      h2 Informações
-       a(href="/painel")
-        span ↺
-      hr
-      .areas
-       h3 IP
-       span= ipp
-       h3 Uptime
-       span= uptime
-      .areasp
-       h3 OS
-       span= sistema
-       h3 Distro
-       span= distro
+     .row
+      .col-md-5
+       .caixa-painel
+        h2 Informações
+        hr
+        .areas
+          h3 IP
+          span= ipp
+          h3 Uptime
+          span= uptime
+          h3 Pais
+          span=pais
+        .areasp
+          h3 OS
+          span= sistema
+          h3 Distro
+          span= distro
+          h3 &nbsp
+          span &nbsp
+       br
+       .caixa-painel
+        h2 CPU
+        hr
+        .areas
+          h3 Cores
+          span= cpunum
+          h3 Uso
+          span= cpuuso + '%'
+      .col-md-5
+       .caixa-painel
+          h2 RAM
+          hr
+          .areas
+           h3 RAM Total
+           span= ramt
+           span= ' / ' + ramtp
+           h3 RAM Livre
+           span= ramf
+           span= ' / ' + ramfp

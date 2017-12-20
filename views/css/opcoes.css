@@ -11,8 +11,7 @@ a {
 }
 
 body {
-    font-family: 'Roboto', sans-serif; 
-    background: black;   
+    font-family: 'Roboto', sans-serif;    
 }
 
 aside {
@@ -29,7 +28,6 @@ aside {
 aside a:hover {
     color: rgb(73, 101, 194);
 }
-
 
 aside h1 {
     color: white;
@@ -58,17 +56,43 @@ aside .ativo {
     color: rgb(73, 101, 194);
 }
 
-.area-consola {
+.area-opcoes {
     display: inline-block;
     margin-left: 280px;
     margin-top: 30px;
-    color: white;
 }
 
-.consola {
-    padding-top: 30px;
-    font-size: 1.1em;
-    font-family: monospace;
+.area-opcoes form {
+    margin-top: 5%;
+}
+
+.area-opcoes label {
+    font-size: 1.2em;
+}
+
+.area-opcoes input {
+    width: 90%;
+    border: 1px solid rgb(7,9,24);
+    padding: 5px;
+    border-radius: 4px;
+    background-color: rgb(240, 240, 240);
+}
+
+.area-opcoes select {
+    width: 90%;
+    border: 1px solid rgb(7,9,24);
+    padding: 5px;
+    border-radius: 4px;
+    background-color: rgb(240, 240, 240);
+}
+
+
+.area-opcoes button {
+    border: none;
+    padding: 10px;
+    display: inline-block;
+    background-color: rgb(7,9,24);
     color: white;
-    background: black;
+    border-radius: 4px;
+    margin-top: 8%;
 }

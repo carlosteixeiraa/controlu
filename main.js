@@ -4,11 +4,14 @@ var session = require("express-session");
 var linuxDistro = require('linux-distro');
 var procStats = require('process-stats')
 var publicIp = require('public-ip');
+var ip2country = require('ip2country');
 var os = require('os');
 var pty = require('pty.js');
 var osName = require('os-name');
+var diskspace = require('diskspace');
 var http = require('http');
 var fs = require('fs');
+var cpu = require('cpu');
 var app = express();
 var port = 3002;
 
@@ -61,31 +64,31 @@ server.listen(port, () => {
     console.log('Controlu a ouvir em localhost:' + port)
 });
 
-io.on('connection', function(socket){
+io.on('connection', (socket) =>{
   // Criar consola
   var term = pty.spawn('sh', [], {
     name: 'xterm-color',
-    cols: 80,
+    cols: 90,
     rows: 30,
     cwd: process.env.HOME,
     env: process.env
   });
   // Ouve pelo ouput e manda ao user
-  term.on('data', function(data){
+  term.on('data', (data) => {
     socket.emit('output', data);
   });
 
   // Ouve o que o user insere e manda para a consola
-  socket.on('input', function(data){
+  socket.on('input', (data) => {
     term.write(data);
   });
 
-  socket.on('resize', function(data){
+  socket.on('resize', (data) => {
     term.resize(data[0], data[1]);
   });
 
   // Quando o usuario sai
-  socket.on("disconnect", function(){
+  socket.on("disconnect", () => {
     term.destroy();
     console.log("User saiu da consola!");
   });
@@ -106,15 +109,18 @@ app.get('/criarconta', (req, res) => {
     salvarUser.save((err, savedUser) => {
         if (err) {
             console.log(err);
+            res.redirect('/');
         } else {
             console.log('User criado com sucesso!');
-            res.redirect('/');
+            mensagem = '✓ User criado com sucesso!'
+            res.redirect('/logout');
         }
     })
 })
 
 // API Login
 var erro;
+var mensagem;
 app.get('/login', (req, res) => {
     var username = req.query.username;
     var password = req.query.password;
@@ -128,9 +134,11 @@ app.get('/login', (req, res) => {
         }
         if (!user) {
             erro = '✖ Utilizador não encontrado ou password errada.';
+            mensagem = '';
             res.redirect('/');
         } else {
             erro = '';
+            mensagem = '';
             req.session.user = user;
             res.redirect('/painel');
         }
@@ -146,16 +154,19 @@ app.get('/logout', (req, res) => {
 // Route Inicio
 app.get("/", (req, res) => {
     obterInfo();
+    obterUsers();
     if(!req.session.user) {
         res.render('index', {
             titulo: 'Controlu - Iniciar sessão',
-            erro: erro
+            erro: erro,
+            mensagem: mensagem
         })
     } else {
         res.redirect('/painel');
     }
 });
 
+// Route Consola
 app.get("/consola", (req, res) => {
     if(!req.session.user) {
         erro = '✖ É necessario iniciar sessão para usar a consola.'        
@@ -169,20 +180,146 @@ app.get("/consola", (req, res) => {
     }
 })
 
+// Obter users
+var usuarios;
+function obterUsers() {
+    User.find(function (err, Users) {
+        if (err) {
+            console.error(err);
+        } else {
+            usuarios = Users;
+        }
+    });
+}
+
+// Route Opções
+app.get("/opcoes", (req, res) => {
+    obterUsers();
+    if(!req.session.user) {
+        erro ='✖ É necessario iniciar sessão para aceder as opções.';
+        res.redirect("/");
+    } else {
+        erro = '';
+        res.render('opcoes', {
+            titulo: 'Controlu - Opções',
+            user: req.session.user,
+            usuarios: usuarios
+        })
+    }
+})
+
+// Mudar Nome
+app.get("/mudarnome", (req, res) => {
+    if(!req.session.user) {
+        erro ='✖ É necessario iniciar sessão para alterar informações.';
+        res.redirect("/");
+    } else {
+        var nomeo = req.query.nome;
+        var nomea = req.session.user.nome;
+        User.update({
+            nome: nomea
+        },{
+            nome: nomeo,
+        }).then(doc => {
+            if(!doc) {
+                res.redirect("/");
+            } else {
+                mensagem = '✓ Nome actualizado com sucesso!'
+                res.redirect("/logout");
+            }
+        })
+    } 
+});
+
+// Mudar Password
+app.get("/mudarpass", (req, res) => {
+    if(!req.session.user) {
+        erro ='✖ É necessario iniciar sessão para alterar informações.';
+        res.redirect("/");
+    } else {
+        var passwordo = req.query.password;
+        var nomea = req.session.user.nome;
+        User.update({
+            nome: nomea
+        },{
+            password: passwordo,
+        }).then(doc => {
+            if(!doc) {
+                res.redirect("/");
+            } else {
+                mensagem = '✓ Password actualizada com sucesso!'
+                res.redirect("/logout");
+            }
+        })
+    } 
+});
+
+// Remover User
+app.get("/removeruser", (req, res) => {
+    if(!req.session.user) {
+        erro ='✖ É necessario iniciar sessão para alterar informações.';
+        res.redirect("/");
+    } else {
+        var nomeo = req.query.usuario
+        User.findOneAndRemove({
+            nome: nomeo
+        }, (err) => {
+            if (err) {
+                console.log(err);
+                res.redirect('/');
+            } else {
+                mensagem = '✓ User removido com sucesso!';
+                res.redirect('/logout');
+            }
+        })
+    }
+});
+
 // Painel Info
 var distro;
 var ipp;
-var uptime;
+var disco;
+var cpuuso;
+var cpunum;
+var pais;
 
 function obterInfo() {
+    // Distro
     linuxDistro().then(data => {
         distro = data.os;
     });
+    // IP
     publicIp.v4().then(ip => {
         ipp = ip;
     });
+    // Sistema
     stats = procStats();
+    // CPU
+    cpunum = cpu.num();
+    cpu.usage((arr) => {
+        cpuuso = arr[0];
+    });
+    // Pais
+    pais = ip2country(ipp);    
 }
+
+// Retirar %
+function retirarP(nome) {
+    nome.substring(0, nome.length - 1)
+}
+
+// Calcular %
+function calcularP(num1, num2) {
+    var pp = 100*num2
+    var sp = pp/num1
+    return sp;
+}
+
+// Prevenir 404 favicon
+app.get('/favicon.ico', (req, res) => {
+    res.status(204);
+});
+
 
 // Route Painel
 app.get("/painel", (req, res) => {
@@ -198,6 +335,13 @@ app.get("/painel", (req, res) => {
             user: req.session.user.nome,
             sistema: sistema,
             uptime: stats.uptime.pretty,
+            ramf: stats.memFree.pretty,
+            cpuuso: cpuuso,
+            cpunum: cpunum,
+            pais: pais,
+            ramfp: stats.memFree.percent,
+            ramt: stats.memTotal.pretty,
+            ramtp: stats.memTotal.percent,
             distro: distro,
             ipp: ipp
         });

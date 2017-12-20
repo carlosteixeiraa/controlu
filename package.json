@@ -10,9 +10,12 @@
   "author": "Carlos Teixeira",
   "license": "MIT",
   "dependencies": {
+    "cpu": "^1.0.1",
+    "diskspace": "^2.0.0",
     "exec-sh": "^0.2.1",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
+    "ip2country": "^1.0.0",
     "linux-distro": "^4.0.1",
     "mongoose": "^4.13.7",
     "os-name": "^2.0.1",
@@ -20,6 +23,7 @@
     "pty.js": "^0.3.1",
     "public-ip": "^2.4.0",
     "pug": "^2.0.0-rc.4",
-    "socket.io": "^2.0.4"
+    "socket.io": "^2.0.4",
+    "y": "^0.3.2"
   }
 }

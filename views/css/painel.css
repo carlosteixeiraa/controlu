@@ -25,6 +25,11 @@ aside {
     height: 100%;
 }
 
+aside a:hover {
+    color: rgb(73, 101, 194);
+}
+
+
 aside h1 {
     color: white;
     padding-top: 30px;
@@ -54,6 +59,7 @@ aside nav ul li {
 
 .area-painel {
     display: inline-block;
+    width: 900px;
     margin-left: 280px;
     margin-top: 30px;
 }
@@ -101,6 +107,10 @@ aside nav ul li {
     padding-left: 26px;    
 }
 
+.caixa-painel span {
+    color: black;
+}
+
 .caixa-painel h3 {
     padding-top: 6px;
 }
@@ -109,8 +119,12 @@ aside nav ul li {
     display: inline-block;
 }
 
-.caixa-painel h2 span {
+.area-painel .intro span {
     display: inline-block;
-    margin-left: 110px;
+    font-size: 1.5em;
     color: rgb(13, 146, 13);
+}
+
+.area-painel h2 {
+    display: inline-block;
 }

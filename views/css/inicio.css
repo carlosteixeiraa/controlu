@@ -70,6 +70,12 @@ h1 {
     color: red;
 }
 
+.caixa-login .mensagem {
+    margin-top: 10px;
+    display: inline-block;
+    color: green;
+}
+
 span {
     color: white;
 }
