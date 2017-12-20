@@ -36,7 +36,7 @@ mongoose.connect('mongodb://localhost:27017/controlu', (err) => {
     if(err) {
         console.log('Algo occoreu ao conectar a base de dados!')
     } else {
-        console.log('Conectamos a base de dados com sucesso!')
+        console.log('Controlu ligou-se a base de dados com sucesso!')
     }
 });
 
@@ -97,25 +97,30 @@ io.on('connection', (socket) =>{
 
 // API Registro
 app.get('/criarconta', (req, res) => {
-    var username = req.query.username;
-    var password = req.query.password;
-    var nome = req.query.nome;
+    if(!req.session.user) {
+        erro ='✖ É necessario iniciar sessão para criar contas.';
+        res.redirect("/");
+    } else {
+        var username = req.query.username;
+        var password = req.query.password;
+        var nome = req.query.nome;
 
-    var salvarUser = new User();
-    salvarUser.username = username;
-    salvarUser.password = password;
-    salvarUser.nome = nome;
-    
-    salvarUser.save((err, savedUser) => {
-        if (err) {
-            console.log(err);
-            res.redirect('/');
-        } else {
-            console.log('User criado com sucesso!');
-            mensagem = '✓ User criado com sucesso!'
-            res.redirect('/logout');
-        }
-    })
+        var salvarUser = new User();
+        salvarUser.username = username;
+        salvarUser.password = password;
+        salvarUser.nome = nome;
+        
+        salvarUser.save((err, savedUser) => {
+            if (err) {
+                console.log(err);
+                res.redirect('/');
+            } else {
+                console.log('User criado com sucesso!');
+                mensagem = '✓ User criado com sucesso!'
+                res.redirect('/logout');
+            }
+        })
+    }
 })
 
 // API Login
@@ -320,9 +325,15 @@ app.get('/favicon.ico', (req, res) => {
     res.status(204);
 });
 
+// Prevenir /js/jquery.min.map
+app.get('/js/jquery.min.map', (req, res) => {
+    res.status(204);
+})
+
 
 // Route Painel
 app.get("/painel", (req, res) => {
+    obterUsers();
     if(!req.session.user) {
         erro = '✖ É necessario iniciar sessão para usar o painel.'        
         res.redirect('/');

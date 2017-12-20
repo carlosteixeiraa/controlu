@@ -8,3 +8,8 @@ function recarregar() {
 function tempo() {
     location.reload(); 
 }
+
+$(document).ready(function() {
+    $("aside").hide(0);
+    $("aside").show(1100);
+});
