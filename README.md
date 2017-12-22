@@ -12,7 +12,7 @@ Controlu é um painel de controlo para servidores linux (ainda não exprimentado
 
 ### Requerimentos
 <li>Servidor Linux</li>
-<li>Node.js</li>
+<li>Node.js (versão 6 ou mais alta)</li>
 <li>MongoDB</li>
 
 
